@@ -1,0 +1,3 @@
+venv/
+k8s/secret.yaml
+__pycache__/
