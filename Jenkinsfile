@@ -20,7 +20,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'python -m compileall .'
+                sh 'python3 -m compileall .'
             }
         }
     }
