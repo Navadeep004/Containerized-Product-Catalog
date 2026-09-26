@@ -4,6 +4,11 @@ pipeline {
         label 'linux'
     }
 
+    environment {
+        IMAGE_TAG = '2.0'
+        DOCKER_IMAGE = 'navadeep04/product-catalog-api'
+    }
+
     stages {
 
         stage('Install Dependencies') {
@@ -20,7 +25,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t product-catalog-api:2.0 .'
+                sh 'docker build -t product-catalog-api:$IMAGE_TAG .'
             }
         }
 
@@ -33,11 +38,25 @@ pipeline {
                 )]) {
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-                        docker tag product-catalog-api:2.0 "$DOCKER_USERNAME/product-catalog-api:2.0"
-                        docker push "$DOCKER_USERNAME/product-catalog-api:2.0"
+                        docker tag "product-catalog-api:$IMAGE_TAG" "$DOCKER_IMAGE:$IMAGE_TAG"
+                        docker push "$DOCKER_IMAGE:$IMAGE_TAG"
                         docker logout
                     '''
                 }
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                    kubectl apply -f k8s/namespace.yaml
+                    kubectl apply -f k8s/mongodb-deployment.yaml
+                    kubectl apply -f k8s/mongodb-service.yaml
+                    kubectl apply -f k8s/product-api-deployment.yaml
+                    kubectl apply -f k8s/product-api-service.yaml
+
+                    kubectl rollout status deployment/product-api -n product-catalog
+                '''
             }
         }  
     }
