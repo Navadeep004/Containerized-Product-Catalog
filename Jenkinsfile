@@ -52,8 +52,8 @@ pipeline {
                     kubectl apply -f k8s/namespace.yaml
                     kubectl apply -f k8s/mongodb-deployment.yaml
                     kubectl apply -f k8s/mongodb-service.yaml
-                    kubectl apply -f k8s/product-api-deployment.yaml
-                    kubectl apply -f k8s/product-api-service.yaml
+                    kubectl apply -f k8s/api-deployment.yaml
+                    kubectl apply -f k8s/api-service.yaml
 
                     kubectl rollout status deployment/product-api -n product-catalog
                 '''
