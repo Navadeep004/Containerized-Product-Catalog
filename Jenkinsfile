@@ -60,4 +60,19 @@ pipeline {
             }
         }  
     }
+
+    post {
+
+        success {
+            echo 'CI/CD Pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'CI/CD Pipeline failed. Check the Jenkins console output.'
+        }
+
+        always {
+            echo 'Pipeline execution completed.'
+        }
+    }
 }
